@@ -176,10 +176,22 @@
             justify-content: center;
             cursor: pointer;
             background-color: #f9f9f9;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .photo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .photo-placeholder:hover {
             border-color: #ff6b6b;
+        }
+
+        .photo-upload input {
+            display: none;
         }
 
         .interests-container {
@@ -458,45 +470,13 @@
             cursor: pointer;
         }
 
-        /* Ad Container */
-        .ad-container {
-            text-align: center;
-            margin: 20px 0;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 10px;
-            color: white;
-        }
-
-        .ad-btn {
-            background: #ffd166;
-            color: #333;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-            margin: 5px;
-            transition: transform 0.2s;
-        }
-
-        .ad-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .ad-reward {
-            font-size: 14px;
-            margin-top: 8px;
-            opacity: 0.9;
-        }
-
-        /* Daily Limits */
-        .limits-info {
+        /* Unlimited Status */
+        .unlimited-status {
             text-align: center;
             margin: 10px 0;
             font-size: 14px;
-            color: #666;
+            color: #4CAF50;
+            font-weight: bold;
         }
 
         /* Footer */
@@ -544,34 +524,9 @@
         </div>
     </header>
 
-    <!-- Ad Container -->
-    <div class="container ad-container">
-        <h3>🎁 Daily Rewards - Watch Ads for Bonuses!</h3>
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 15px 0;">
-            <button class="ad-btn" onclick="watchAd('video_calls')">
-                📞 Get +20 Video Calls
-            </button>
-            <button class="ad-btn" onclick="watchAd('profile_boosts')">
-                ⚡ Get 2 Profile Boosts
-            </button>
-            <button class="ad-btn" onclick="watchAd('see_likes')">
-                👀 See Who Liked You
-            </button>
-            <button class="ad-btn" onclick="watchAd('voice_calls')">
-                🎤 Get +15 Voice Calls
-            </button>
-            <button class="ad-btn" onclick="watchAd('unlimited_messages')">
-                💬 Unlimited Messages Today
-            </button>
-        </div>
-        <div class="ad-reward">
-            Watch short ads to unlock premium features for free!
-        </div>
-    </div>
-
-    <!-- Daily Limits Info -->
-    <div class="container limits-info">
-        <p>📊 Daily Limits: <span id="video-calls-left">7</span> Video Calls | <span id="voice-calls-left">10</span> Voice Calls | <span id="messages-left">25</span> Messages</p>
+    <!-- Unlimited Status -->
+    <div class="container unlimited-status">
+        <p>✨ Unlimited Video Calls | Unlimited Voice Calls | Unlimited Messages ✨</p>
     </div>
 
     <!-- Main Content -->
@@ -634,13 +589,13 @@
                 </div>
                 <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-align: center; width: 250px;">
                     <div style="font-size: 40px; color: #ff6b6b; margin-bottom: 15px;">📞</div>
-                    <h3>Video & Voice Calls</h3>
-                    <p>Connect face-to-face with high-quality video and voice calls right in the app.</p>
+                    <h3>Unlimited Calls</h3>
+                    <p>Connect face-to-face with unlimited high-quality video and voice calls right in the app.</p>
                 </div>
                 <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-align: center; width: 250px;">
                     <div style="font-size: 40px; color: #ff6b6b; margin-bottom: 15px;">💬</div>
-                    <h3>Chat & Connect</h3>
-                    <p>Get to know your matches with our seamless messaging system.</p>
+                    <h3>Unlimited Messages</h3>
+                    <p>Get to know your matches with unlimited messaging.</p>
                 </div>
             </div>
         </div>
@@ -795,10 +750,22 @@
                 <div class="form-group">
                     <label>Photos</label>
                     <div class="photo-upload">
-                        <div class="photo-placeholder">+</div>
-                        <div class="photo-placeholder">+</div>
-                        <div class="photo-placeholder">+</div>
-                        <div class="photo-placeholder">+</div>
+                        <div class="photo-placeholder" onclick="document.getElementById('photo-input-1').click()">
+                            <input type="file" id="photo-input-1" accept="image/*" onchange="handlePhotoUpload(this, 1)">
+                            +
+                        </div>
+                        <div class="photo-placeholder" onclick="document.getElementById('photo-input-2').click()">
+                            <input type="file" id="photo-input-2" accept="image/*" onchange="handlePhotoUpload(this, 2)">
+                            +
+                        </div>
+                        <div class="photo-placeholder" onclick="document.getElementById('photo-input-3').click()">
+                            <input type="file" id="photo-input-3" accept="image/*" onchange="handlePhotoUpload(this, 3)">
+                            +
+                        </div>
+                        <div class="photo-placeholder" onclick="document.getElementById('photo-input-4').click()">
+                            <input type="file" id="photo-input-4" accept="image/*" onchange="handlePhotoUpload(this, 4)">
+                            +
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -842,39 +809,15 @@
         let currentUser = null;
         let currentCall = null;
         
-        // Daily limits and rewards
-        let userLimits = {
-            videoCalls: 7,
-            voiceCalls: 10,
-            messages: 25,
-            profileBoosts: 0,
-            canSeeLikes: false,
-            unlimitedMessages: false
-        };
-
-        // Ad rewards configuration
-        const adRewards = {
-            video_calls: { bonus: 20, message: "+20 Video Calls Added!" },
-            profile_boosts: { bonus: 2, message: "+2 Profile Boosts Added!" },
-            see_likes: { bonus: true, message: "You can now see who liked you!" },
-            voice_calls: { bonus: 15, message: "+15 Voice Calls Added!" },
-            unlimited_messages: { bonus: true, message: "Unlimited messages for today!" }
-        };
-
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
             // Check if user is already logged in
             const savedUser = localStorage.getItem('connectme_user');
-            const savedLimits = localStorage.getItem('connectme_limits');
             
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
-                if (savedLimits) {
-                    userLimits = JSON.parse(savedLimits);
-                }
                 showPage('home');
                 document.getElementById('logout-btn').style.display = 'block';
-                updateLimitsDisplay();
             } else {
                 showPage('login');
             }
@@ -903,37 +846,7 @@
             
             // Set up logout
             document.getElementById('logout-btn').addEventListener('click', logout);
-
-            // Reset daily limits at midnight
-            checkDailyReset();
         });
-
-        // Check if it's a new day and reset limits
-        function checkDailyReset() {
-            const lastReset = localStorage.getItem('last_reset');
-            const today = new Date().toDateString();
-            
-            if (lastReset !== today) {
-                userLimits = {
-                    videoCalls: 7,
-                    voiceCalls: 10,
-                    messages: 25,
-                    profileBoosts: 0,
-                    canSeeLikes: false,
-                    unlimitedMessages: false
-                };
-                localStorage.setItem('connectme_limits', JSON.stringify(userLimits));
-                localStorage.setItem('last_reset', today);
-                updateLimitsDisplay();
-            }
-        }
-
-        // Update limits display
-        function updateLimitsDisplay() {
-            document.getElementById('video-calls-left').textContent = userLimits.videoCalls;
-            document.getElementById('voice-calls-left').textContent = userLimits.voiceCalls;
-            document.getElementById('messages-left').textContent = userLimits.unlimitedMessages ? '∞' : userLimits.messages;
-        }
         
         // Page navigation
         function showPage(pageId) {
@@ -1037,6 +950,19 @@
             alert('Profile saved successfully!');
             showPage('home');
         }
+
+        // Photo upload function
+        function handlePhotoUpload(input, photoNumber) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const placeholder = document.querySelector(`#photo-input-${photoNumber}`).parentElement;
+                    placeholder.innerHTML = `<img src="${e.target.result}" alt="Uploaded photo">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
         
         // Swipe functions
         function swipe(action) {
@@ -1049,143 +975,66 @@
             }, 500);
         }
         
-        // Call functions with limits
+        // Call functions - no limits
         function startVideoCall() {
-            if (userLimits.videoCalls > 0) {
-                userLimits.videoCalls--;
-                localStorage.setItem('connectme_limits', JSON.stringify(userLimits));
-                updateLimitsDisplay();
-                showPage('video-call');
-            } else {
-                alert('Daily video call limit reached! Watch an ad to get +20 more video calls.');
-            }
+            showPage('video-call');
         }
         
         function startVoiceCall() {
-            if (userLimits.voiceCalls > 0) {
-                userLimits.voiceCalls--;
-                localStorage.setItem('connectme_limits', JSON.stringify(userLimits));
-                updateLimitsDisplay();
-                showPage('voice-call');
-            } else {
-                alert('Daily voice call limit reached! Watch an ad to get +15 more voice calls.');
-            }
-        }
-        
-        function toggleMute() {
-            // In a real app, this would toggle the microphone
-            alert('Microphone toggled');
-        }
-        
-        function toggleVideo() {
-            // In a real app, this would toggle the camera
-            alert('Video toggled');
+            showPage('voice-call');
         }
         
         function endCall() {
             showPage('matches');
-            // In a real app, this would end the current call
         }
         
-        // Message functions with limits
+        function toggleMute() {
+            alert('Mute toggled');
+        }
+        
+        function toggleVideo() {
+            alert('Video toggled');
+        }
+        
+        // Message functions - no limits
         function sendMessage() {
-            if (!userLimits.unlimitedMessages && userLimits.messages <= 0) {
-                alert('Daily message limit reached! Watch an ad to get unlimited messages for today.');
-                return;
-            }
-
             const input = document.querySelector('.message-input input');
             const message = input.value.trim();
             
             if (message) {
-                if (!userLimits.unlimitedMessages) {
-                    userLimits.messages--;
-                    localStorage.setItem('connectme_limits', JSON.stringify(userLimits));
-                    updateLimitsDisplay();
-                }
-
+                // Add message to chat
                 const messagesList = document.querySelector('.messages-list');
-                const newMessage = document.createElement('div');
-                newMessage.className = 'message sent';
-                newMessage.innerHTML = `<div class="message-content">${message}</div>`;
-                messagesList.appendChild(newMessage);
-                
-                // Scroll to bottom
-                messagesList.scrollTop = messagesList.scrollHeight;
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message sent';
+                messageElement.innerHTML = `<div class="message-content">${message}</div>`;
+                messagesList.appendChild(messageElement);
                 
                 // Clear input
                 input.value = '';
                 
-                // Simulate reply after a delay
+                // Scroll to bottom
+                messagesList.scrollTop = messagesList.scrollHeight;
+                
+                // Simulate reply
                 setTimeout(() => {
-                    const replies = [
-                        "That's interesting!",
-                        "Tell me more about that.",
-                        "I feel the same way!",
-                        "What do you think about trying that together?"
-                    ];
-                    const reply = replies[Math.floor(Math.random() * replies.length)];
-                    
-                    const replyMessage = document.createElement('div');
-                    replyMessage.className = 'message received';
-                    replyMessage.innerHTML = `<div class="message-content">${reply}</div>`;
-                    messagesList.appendChild(replyMessage);
-                    
-                    // Scroll to bottom
+                    const replyElement = document.createElement('div');
+                    replyElement.className = 'message received';
+                    replyElement.innerHTML = `<div class="message-content">Thanks for your message! 😊</div>`;
+                    messagesList.appendChild(replyElement);
                     messagesList.scrollTop = messagesList.scrollHeight;
                 }, 1000);
             }
         }
         
-        // Ad function with rewards
-        function watchAd(rewardType) {
-            // Open ad in background tab
-            const adWindow = window.open('https://www.revenuecpmgate.com/e87cwx1k2?key=33278bd39edfd13913bf9616d55048a9', '_blank');
-            
-            // Apply reward after ad is watched (simulated)
-            setTimeout(() => {
-                const reward = adRewards[rewardType];
-                
-                switch(rewardType) {
-                    case 'video_calls':
-                        userLimits.videoCalls += reward.bonus;
-                        break;
-                    case 'voice_calls':
-                        userLimits.voiceCalls += reward.bonus;
-                        break;
-                    case 'profile_boosts':
-                        userLimits.profileBoosts += reward.bonus;
-                        break;
-                    case 'see_likes':
-                        userLimits.canSeeLikes = reward.bonus;
-                        break;
-                    case 'unlimited_messages':
-                        userLimits.unlimitedMessages = reward.bonus;
-                        break;
-                }
-                
-                localStorage.setItem('connectme_limits', JSON.stringify(userLimits));
-                updateLimitsDisplay();
-                
-                alert(`🎉 Reward Claimed! ${reward.message}`);
-                
-                // Close the ad window after reward is given
-                if (adWindow && !adWindow.closed) {
-                    adWindow.close();
-                }
-            }, 3000); // Simulate 3-second ad watch time
-        }
-        
-        // Simulated Supabase authentication (for demo purposes)
-        async function simulateSupabaseAuth(action, credentials) {
-            // In a real app, this would be actual Supabase API calls
+        // Simulate Supabase authentication (for demo purposes)
+        function simulateSupabaseAuth(action, credentials) {
             return new Promise((resolve) => {
                 setTimeout(() => {
                     if (action === 'login') {
-                        if (credentials.email === 'demo@connectme.com' && credentials.password === 'password') {
+                        if (credentials.email && credentials.password) {
                             resolve({
                                 user: {
-                                    id: 'user-' + Math.random().toString(36).substr(2, 9),
+                                    id: 'user_' + Math.random().toString(36).substr(2, 9),
                                     email: credentials.email
                                 }
                             });
@@ -1193,17 +1042,20 @@
                             resolve({ error: 'Invalid credentials' });
                         }
                     } else if (action === 'signup') {
-                        resolve({
-                            user: {
-                                id: 'user-' + Math.random().toString(36).substr(2, 9),
-                                email: credentials.email
-                            }
-                        });
+                        if (credentials.email && credentials.password) {
+                            resolve({
+                                user: {
+                                    id: 'user_' + Math.random().toString(36).substr(2, 9),
+                                    email: credentials.email
+                                }
+                            });
+                        } else {
+                            resolve({ error: 'Could not create account' });
+                        }
                     }
                 }, 1000);
             });
         }
     </script>
 </body>
-
 </html>
